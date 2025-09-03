@@ -18,7 +18,6 @@ pthread_mutex_t chopsticks[N];
 
             int left = id;
         int right = (id + 1) % N;
-
         int first = left < right ? left : right;
         int second = left < right ? right : left;
 
