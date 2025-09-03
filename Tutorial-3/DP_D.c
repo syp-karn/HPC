@@ -1,3 +1,5 @@
+// Each philosopher picks up the lower-numbered chopstick first to avoid deadlock
+
 #include <pthread.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -14,22 +16,23 @@ pthread_mutex_t chopsticks[N];
 
             printf("Philosopher %d is hungry\n", id);
 
-            // Pick left chopstick
-            pthread_mutex_lock(&chopsticks[id]);
-            printf("Philosopher %d picked up left chopstick\n", id);
+            int left = id;
+        int right = (id + 1) % N;
 
-            // Pick right chopstick
-            pthread_mutex_lock(&chopsticks[(id+1)%N]);
-            printf("Philosopher %d picked up right chopstick\n", id);
+        int first = left < right ? left : right;
+        int second = left < right ? right : left;
 
-            printf("Philosopher %d is eating...\n", id);
-            sleep(1);
+        pthread_mutex_lock(&chopsticks[first]);
+        printf("Philosopher %d picked up chopstick %d\n", id, first);
 
-            // Put down chopsticks
-            pthread_mutex_unlock(&chopsticks[id]);
-            pthread_mutex_unlock(&chopsticks[(id+1)%N]);
+        pthread_mutex_lock(&chopsticks[second]);
+        printf("Philosopher %d picked up chopstick %d\n", id, second);
 
-            printf("Philosopher %d finished eating\n", id);
+        printf("Philosopher %d is eating...\n", id);
+        sleep(1);
+
+        pthread_mutex_unlock(&chopsticks[second]);
+        pthread_mutex_unlock(&chopsticks[first]);
         }
         return NULL;
     }   
