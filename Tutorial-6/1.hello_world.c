@@ -1,0 +1,19 @@
+#include<stdio.h>
+#include<mpi.h>
+
+int main(int argc, char** argv){
+    MPI_Init(&argc,&argv);
+
+    int rank;
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+    int size;
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    printf("Hello world from processor %d out of %d\n", rank, size);
+
+    MPI_Finalize();
+    return 0;
+}
+///sudo apt install openmpi-bin libopenmpi-dev
+// mpirun --oversubscribe -np 4 ./a.out
